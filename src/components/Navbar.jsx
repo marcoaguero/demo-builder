@@ -1,30 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import iconImage from "../assets/logo.png"; // Import the icon image
-import { AuthContext } from "../store/AuthContext";
 import { Link } from "react-router-dom";
 import { useFastSpring } from "../store/FastSpringContext";
 
 const Navbar = (props) => {
-  const { state, dispatch } = useContext(AuthContext);
   const { data } = useFastSpring();
-  const handleLogout = () => {
-    dispatch({ type: "LOGOUT" });
-  };
-  let loggingButton;
-  if (!state.isLogged) {
-    loggingButton = (
-      <Link to="/login" className="nav-link active" aria-current="page">
-        <b>Log in</b>
-      </Link>
-    );
-  }
-  if (state.isLogged) {
-    loggingButton = (
-      <Link to="#" className="nav-link active" onClick={handleLogout}>
-        <b>Log out</b>
-      </Link>
-    );
-  }
   const checkout = () => {
     // Push the payload to add the product
     window.fastspring.builder.checkout();
@@ -67,7 +47,6 @@ const Navbar = (props) => {
                 Home
               </Link>
             </li>
-            <li className="ms-auto">{loggingButton}</li>
           </ul>
           <button onClick={checkout} className="btn btn-outline-dark">
             <i className="bi-cart-fill me-1"></i>
