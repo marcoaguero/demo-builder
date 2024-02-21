@@ -6,7 +6,6 @@ import PurchaseSuccess from "./containers/PurchaseSuccess";
 import Login from "./containers/LoginPage";
 import { AuthProvider } from "./store/AuthContext";
 import { FastSpringProvider } from "./store/FastSpringContext";
-import Checkout from "./containers/Checkout";
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
               {/* <Route path="/:productId" element={<Details />} /> */}
               <Route path="/purchase_success" element={<PurchaseSuccess />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/checkout" element={<Checkout />} />
             </Routes>
             <Footer />
           </FastSpringProvider>

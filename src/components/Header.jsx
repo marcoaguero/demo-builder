@@ -8,11 +8,6 @@ const Header = () => {
     backgroundPosition: "center",
   };
 
-  const resetCart = () => {
-    // Reset the cart
-    window.fastspring.builder.reset();
-  };
-
   return (
     <header className="bg-dark bg-opacity-75 py-5" style={heroStyle}>
       <div className="container px-4 px-lg-5 my-5">
@@ -20,13 +15,6 @@ const Header = () => {
           <h1 className="display-4 fw-bolder">
             Effect plugins for music production
           </h1>
-          <div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div className="text-center">
-              <button className="btn btn-light mt-auto" onClick={resetCart}>
-                Reset the cart
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </header>

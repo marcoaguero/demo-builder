@@ -19,9 +19,9 @@ const Button = (props) => {
   return (
     <div className="card-footer p-4 pt-0 border-top-0 bg-transparent">
       <div className="text-center">
-        <a className="btn btn-outline-dark mt-auto" onClick={buyProduct}>
+        <button className="btn btn-outline-dark mt-auto" onClick={buyProduct}>
           {props.title}
-        </a>
+        </button>
       </div>
     </div>
   );

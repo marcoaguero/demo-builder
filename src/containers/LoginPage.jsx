@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../store/AuthContext";
 
 const Login = () => {
-  const { state, dispatch } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
 
   const handleLogin = (e) => {
     e.preventDefault(); // Prevent default form submission

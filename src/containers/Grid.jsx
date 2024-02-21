@@ -19,15 +19,19 @@ const Grid = (props) => {
           "
         >
           {products ? ( // Check if products is defined
-            products.map((product) => (
-              <ProductCard
-                display={product.display}
-                path={product.path}
-                image={product.image}
-                price={product.price}
-                key={product.path}
-              />
-            ))
+            products.slice(0, 2).map(
+              (
+                product // Limit to first two items
+              ) => (
+                <ProductCard
+                  display={product.display}
+                  path={product.path}
+                  image={product.image}
+                  price={product.price}
+                  key={product.path}
+                />
+              )
+            )
           ) : (
             <p>No products available</p>
           )}

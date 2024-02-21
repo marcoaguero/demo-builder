@@ -25,6 +25,10 @@ const Navbar = (props) => {
       </Link>
     );
   }
+  const checkout = () => {
+    // Push the payload to add the product
+    window.fastspring.builder.checkout();
+  };
 
   return (
     <nav
@@ -65,19 +69,13 @@ const Navbar = (props) => {
             </li>
             <li className="ms-auto">{loggingButton}</li>
           </ul>
-          <form className="d-flex">
-            <Link
-              to="/checkout"
-              className="btn btn-outline-dark"
-              aria-current="page"
-            >
-              <i className="bi-cart-fill me-1"></i>
-              Cart
-              <span className="ms-1" id="order-total">
-                {data.originalTotal}
-              </span>
-            </Link>
-          </form>
+          <button onClick={checkout} className="btn btn-outline-dark">
+            <i className="bi-cart-fill me-1"></i>
+            Cart
+            <span className="ms-1" id="order-total">
+              {data.originalTotal}
+            </span>
+          </button>
         </div>
       </div>
     </nav>
