@@ -3,7 +3,7 @@ import ProductCard from "../components/ProductCard";
 import Header from "../components/Header";
 import { useFastSpring } from "../store/FastSpringContext";
 
-const Grid = (props) => {
+const Grid = () => {
   const { products } = useFastSpring();
 
   return (

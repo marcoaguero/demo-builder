@@ -16,18 +16,24 @@ export const FastSpringProvider = ({ children }) => {
       setData(data);
       console.log(data);
       if (data && data.groups) {
-        const newProducts = [];
-        data.groups.forEach((group) => {
-          if (group.items && Array.isArray(group.items)) {
-            group.items.forEach((item) => {
-              newProducts.push(item);
-            });
-          }
-        });
+        const newProducts = data.groups
+          .filter((group) => group.items && Array.isArray(group.items))
+          .flatMap((group) => group.items);
         setProducts(newProducts);
       }
     };
 
+    // Redirects upon closing the popup
+    window.onFSPopupClosed = function (orderReference) {
+      if (window.fastspring && window.fastspring.builder) {
+        window.fastspring.builder.reset();
+      }
+      if (orderReference && orderReference.id) {
+        window.location.replace(
+          "purchase_success?orderId=" + orderReference.id
+        );
+      }
+    };
     const addSBL = () => {
       const scriptId = "fsc-api";
       const existingScript = document.getElementById(scriptId);
@@ -40,8 +46,11 @@ export const FastSpringProvider = ({ children }) => {
           "https://sbl.onfastspring.com/sbl/0.9.5/fastspring-builder.min.js";
         script.dataset.storefront =
           "assignmentse.test.onfastspring.com/popup-assignmentse";
-        window.fastSpringCallBack = fastSpringCallBack;
+        if (typeof window !== "undefined") {
+          window.fastSpringCallBack = fastSpringCallBack;
+        }
         script.setAttribute("data-data-callback", "fastSpringCallBack");
+        script.setAttribute("data-popup-closed", "onFSPopupClosed");
 
         document.body.appendChild(script);
       }

@@ -3,11 +3,18 @@ import iconImage from "../assets/logo.png"; // Import the icon image
 import { Link } from "react-router-dom";
 import { useFastSpring } from "../store/FastSpringContext";
 
-const Navbar = (props) => {
+const Navbar = () => {
   const { data } = useFastSpring();
   const checkout = () => {
-    // Push the payload to add the product
-    window.fastspring.builder.checkout();
+    // Check if window object is defined before using it
+    if (
+      typeof window !== "undefined" &&
+      window.fastspring &&
+      window.fastspring.builder
+    ) {
+      // Push the payload to add the product
+      window.fastspring.builder.checkout();
+    }
   };
 
   return (

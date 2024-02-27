@@ -2,14 +2,14 @@ import React from "react";
 import hero from "../assets/hero.jpg";
 
 const Header = () => {
-  const heroStyle = {
+  const heroImage = {
     backgroundImage: `url(${hero})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
 
   return (
-    <header className="bg-dark bg-opacity-75 py-5" style={heroStyle}>
+    <header className="bg-dark bg-opacity-75 py-5" style={heroImage}>
       <div className="container px-4 px-lg-5 my-5">
         <div className="text-center text-white">
           <h1 className="display-4 fw-bolder">
