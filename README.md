@@ -9,3 +9,7 @@ In the project directory, you can run:
 ### `npm test`
 
 ### `npm run build`
+
+## FastSpring React implementation
+
+See it in action here [FS React App](https://fs-react-devrels.vercel.app/).

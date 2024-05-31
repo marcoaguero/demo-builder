@@ -50,9 +50,9 @@ export const FastSpringProvider = ({ children }) => {
           window.fastSpringCallBack = fastSpringCallBack;
         }
         script.setAttribute("data-data-callback", "fastSpringCallBack");
-        script.setAttribute("data-popup-closed", "onFSPopupClosed");
+        script.setAttribute("data-popup-webhook-received", "onFSPopupClosed");
 
-        document.body.appendChild(script);
+        document.head.appendChild(script);
       }
     };
     // Load SBL consistently

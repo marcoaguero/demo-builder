@@ -19,7 +19,7 @@ const Grid = () => {
           "
         >
           {products ? ( // Check if products is defined
-            products.slice(0, 2).map(
+            products.slice(0, 3).map(
               (
                 product // Limit to first two items
               ) => (
