@@ -10,7 +10,9 @@ const Grid = () => {
     <section className="py-5 flex-grow-1">
       <Header />
       <div className="container px-4 px-lg-5 mt-5">
-        CVC: *N9FD
+        <h3>
+          <span class="badge bg-secondary">TEST CVC: *N9FD</span>
+        </h3>
         <div
           className="
             row
