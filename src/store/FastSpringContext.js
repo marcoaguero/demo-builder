@@ -22,7 +22,6 @@ export const FastSpringProvider = ({ children }) => {
         setProducts(newProducts);
       }
     };
-
     // Redirects upon closing the popup
     window.onFSPopupClosed = function (orderReference) {
       if (window.fastspring && window.fastspring.builder) {
