@@ -13,16 +13,6 @@ export default function CheckoutEmbed() {
             checkout.
           </p>
         </div>
-        <div className="rounded-2xl p-4 shadow-sm bg-white border">
-          <div className="h-48 w-full rounded-xl grid place-items-center border border-dashed">
-            <div className="text-center">
-              <div className="text-sm font-semibold">Checkout Embed Area</div>
-              <div className="text-xs opacity-70">
-                Replace with FastSpring SBL embed when ready
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

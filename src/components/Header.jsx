@@ -12,7 +12,7 @@ export default function Header() {
           </div>
           <span className="font-semibold">Demo Builder</span>
         </div>
-        <nav className="flex items-center gap-6 text-sm">
+        {/* <nav className="flex items-center gap-6 text-sm">
           <a href="#about" className="hover:opacity-80">
             About
           </a>
@@ -22,7 +22,7 @@ export default function Header() {
           <span className="text-xs px-2 py-1 rounded bg-gray-100">
             {status}
           </span>
-        </nav>
+        </nav> */}
       </div>
     </header>
   );

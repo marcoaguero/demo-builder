@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFastSpring } from "../context/FastSpringContext";
+import { encodeConfigToHash } from "../utils/configUrl";
 
-export default function ConfigPanel({ onStart }) {
+// Preset storefronts per industry
+const STOREFRONT_PRESETS = {
+  mobile: "maguero.test.onfastspring.com/popup-mobile-demo",
+  gaming: "maguero.test.onfastspring.com/popup-gaming-demo",
+  ecommerce: "maguero.test.onfastspring.com/popup-ecommerce-demo",
+  saas: "maguero.test.onfastspring.com/popup-saas-demo",
+};
+
+// short codes for URL
+const PRESET_CODE = { mobile: "m", gaming: "g", ecommerce: "e", saas: "s" };
+const normalize = (v = "") => String(v).toLowerCase().trim();
+
+export default function ConfigPanel() {
   const {
     storefrontId,
     setStorefrontId,
@@ -11,53 +24,149 @@ export default function ConfigPanel({ onStart }) {
     setCompanyName,
     logoUrl,
     setLogoUrl,
-    setLogoFromFile,
     logoSrc,
     palette,
     setPalette,
+    showBanner,
+    setShowBanner, // NEW
   } = useFastSpring();
 
-  const onColor = (key) => (e) =>
-    setPalette({ ...palette, [key]: e.target.value });
+  const [customStorefront, setCustomStorefront] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+
+  // Apply preset on industry change when not in custom mode
+  useEffect(() => {
+    if (!customStorefront) {
+      const key = normalize(industry);
+      const preset = STOREFRONT_PRESETS[key] || "";
+      setStorefrontId(preset);
+      console.log("[Builder] storefront preset:", key, "→", preset || "(none)");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [industry, customStorefront]);
+
+  // If no preset for this industry, open the custom field
+  useEffect(() => {
+    if (!STOREFRONT_PRESETS[normalize(industry)]) setCustomStorefront(true);
+  }, [industry]);
+
+  useEffect(() => {
+    if (storefrontId) console.log("[Builder] storefrontId →", storefrontId);
+  }, [storefrontId]);
+
+  const onColor = (k) => (e) => setPalette({ ...palette, [k]: e.target.value });
+
+  // Build the config object that will be encoded in the URL hash
+  const buildConfig = () => {
+    const key = normalize(industry);
+    const presetUrl = STOREFRONT_PRESETS[key];
+    const isPresetActive = !customStorefront && !!presetUrl;
+
+    return {
+      industry,
+      storefrontId,
+      presetKey: isPresetActive ? PRESET_CODE[key] : undefined,
+      brand: {
+        companyName: companyName || "",
+        logoUrl: logoUrl || "",
+        palette: {
+          accent: palette.accent,
+          nav: palette.nav,
+          background: palette.background,
+          text: palette.text,
+        },
+      },
+      banner: !!showBanner, // NEW
+      debug: false,
+    };
+  };
+
+  const handleGenerate = () => {
+    const cfg = buildConfig();
+    const hash = encodeConfigToHash(cfg);
+    const url = `${window.location.origin}/demo${hash}`;
+    setShareUrl(url);
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const copyLink = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert("Copied!");
+    } catch {
+      alert(shareUrl);
+    }
+  };
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-6 grid gap-4">
       <div className="text-sm font-semibold opacity-80">Config</div>
 
+      {/* Industry + (hidden by default) Storefront */}
       <div className="grid md:grid-cols-3 gap-4">
         <div className="flex flex-col gap-2">
           <label className="text-xs uppercase tracking-wide opacity-60">
-            Industry
+            Industry / Layout
           </label>
           <select
             className="border rounded-lg p-2"
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
           >
-            <option value="saas">SaaS</option>
-            <option value="gaming">Gaming</option>
-            <option value="fintech">Fintech</option>
-            <option value="retail">Retail</option>
+            <option value="mobile">Mobile apps</option>
+            <option value="gaming">Gaming Store</option>
+            <option value="ecommerce">Ecommerce (Audio/Video)</option>
+            <option value="saas">SaaS Subscription</option>
           </select>
         </div>
 
-        <div className="flex flex-col gap-2 md:col-span-2">
-          <label className="text-xs uppercase tracking-wide opacity-60">
-            Storefront
-          </label>
-          <input
-            className="border rounded-lg p-2"
-            placeholder="e.g., mycompany.onfastspring.com/popup-mycompany"
-            value={storefrontId}
-            onChange={(e) => setStorefrontId(e.target.value)}
-          />
-        </div>
+        {customStorefront ? (
+          <div className="flex flex-col gap-2 md:col-span-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs uppercase tracking-wide opacity-60">
+                Storefront
+              </label>
+              {STOREFRONT_PRESETS[normalize(industry)] && (
+                <button
+                  type="button"
+                  className="text-xs px-3 py-1 rounded border"
+                  onClick={() => {
+                    setCustomStorefront(false);
+                    const preset =
+                      STOREFRONT_PRESETS[normalize(industry)] || "";
+                    setStorefrontId(preset);
+                  }}
+                >
+                  Use preset
+                </button>
+              )}
+            </div>
+            <input
+              className="border rounded-lg p-2 font-mono text-sm"
+              placeholder="e.g., mycompany.onfastspring.com/popup-mycompany"
+              value={storefrontId}
+              onChange={(e) => setStorefrontId(e.target.value)}
+            />
+          </div>
+        ) : (
+          <div className="md:col-span-2 flex items-end">
+            <button
+              type="button"
+              className="text-xs px-3 py-1 rounded border"
+              onClick={() => setCustomStorefront(true)}
+            >
+              Enter custom storefront ID
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Branding */}
       <div className="grid md:grid-cols-3 gap-4">
         <div className="flex flex-col gap-2">
           <label className="text-xs uppercase tracking-wide opacity-60">
-            Company name (fallback)
+            Company name
           </label>
           <input
             className="border rounded-lg p-2"
@@ -79,17 +188,7 @@ export default function ConfigPanel({ onStart }) {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-xs uppercase tracking-wide opacity-60">
-            Or upload PNG
-          </label>
-          <input
-            className="border rounded-lg p-2"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setLogoFromFile(e.target.files?.[0])}
-          />
-        </div>
+        {/* (Upload PNG is commented out for now) */}
       </div>
 
       {logoSrc ? (
@@ -103,6 +202,7 @@ export default function ConfigPanel({ onStart }) {
         </div>
       ) : null}
 
+      {/* Colors */}
       <div className="grid md:grid-cols-4 gap-4">
         <ColorField
           label="Buttons / Accent"
@@ -120,25 +220,47 @@ export default function ConfigPanel({ onStart }) {
           onChange={onColor("background")}
         />
         <ColorField
-          label="Text (optional)"
+          label="Text"
           value={palette.text}
           onChange={onColor("text")}
         />
       </div>
 
-      <div className="rounded-lg border bg-yellow-50 border-yellow-200 text-yellow-900 p-3 text-sm">
-        <strong>Heads up:</strong> Make sure the products you just created for
-        this store are added to the storefront you are going to use.
+      {/* NEW: Seasonal banner toggle */}
+      <div className="flex items-center gap-3">
+        <input
+          id="showBanner"
+          type="checkbox"
+          className="h-4 w-4"
+          checked={!!showBanner}
+          onChange={(e) => setShowBanner(e.target.checked)}
+        />
+        <label htmlFor="showBanner" className="text-sm">
+          Show banner (featured offer)
+        </label>
       </div>
 
-      <div>
+      <div className="rounded-lg border bg-yellow-50 border-yellow-200 text-yellow-900 p-3 text-sm">
+        <strong>Heads up:</strong> Make sure the products for this store are
+        added to the storefront you’re using.
+      </div>
+
+      <div className="flex items-center gap-3">
         <button
           className="px-4 py-2 rounded-lg bg-black text-white disabled:opacity-50"
           disabled={!storefrontId}
-          onClick={onStart}
+          onClick={handleGenerate}
         >
           Generate demo
         </button>
+        {shareUrl ? (
+          <button
+            className="text-sm px-3 py-2 rounded border"
+            onClick={copyLink}
+          >
+            Copy link
+          </button>
+        ) : null}
       </div>
     </section>
   );
